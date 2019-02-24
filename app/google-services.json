@@ -1,0 +1,86 @@
+{
+  "project_info": {
+    "project_number": "918242849635",
+    "firebase_url": "https://mlkit-a2076.firebaseio.com",
+    "project_id": "mlkit-a2076",
+    "storage_bucket": "mlkit-a2076.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:918242849635:android:09546560b4505797",
+        "android_client_info": {
+          "package_name": "com.google.firebase.samples.apps.mlkit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "918242849635-ca4obcdidijt2aeh20ikmeo0ijnr3eiv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA67bvOYLHtgN6aQwVgS5u7oCiZTC_r5oc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:918242849635:android:a8263bcae52f0c6a",
+        "android_client_info": {
+          "package_name": "com.zainras.aplikasikamera"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "918242849635-ijdg7n83crn8lt17sd9f9egjgmtemj2p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zainras.aplikasikamera",
+            "certificate_hash": "7a01195cf8e88cd82286d85c36b3d5f41c5da37c"
+          }
+        },
+        {
+          "client_id": "918242849635-ca4obcdidijt2aeh20ikmeo0ijnr3eiv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA67bvOYLHtgN6aQwVgS5u7oCiZTC_r5oc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "918242849635-ca4obcdidijt2aeh20ikmeo0ijnr3eiv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

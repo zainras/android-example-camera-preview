@@ -8,11 +8,11 @@ import android.view.SurfaceView;
 
 import static android.content.ContentValues.TAG;
 
-public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
+public class MyCameraPreview extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder mHolder;
     private Camera mCamera;
 
-    public CameraPreview(Context context, Camera camera) {
+    public MyCameraPreview(Context context, Camera camera) {
         super(context);
         mCamera = camera;
 
