@@ -1,21 +1,26 @@
 package com.zainras.aplikasikamera;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.hardware.Camera;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.LoginFilter;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -41,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private Camera mCamera;
     private MyCameraPreview mPreview;
     private Context context;
+    private ImageView img2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
         mPreview = new MyCameraPreview(this, mCamera);
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.addView(mPreview);
+
+        img2 = findViewById(R.id.img_preview_capture2);
 
         // event listener
         Button captureButton = (Button) findViewById(R.id.button_capture);
@@ -73,8 +81,10 @@ public class MainActivity extends AppCompatActivity {
         Camera c = null;
         try {
             c = Camera.open(); // attemp to get camera instance
+            Log.d("BUKAK", "kamera berhasil");
         } catch (Exception e) {
             // camera is not available
+            Log.d("BUKAK", "kamera gagal");
         }
         return c;
     }
@@ -91,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
     // capture image from camera
     private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
+        @TargetApi(Build.VERSION_CODES.KITKAT)
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
             File pictureFile =  getOutputMediaFile(MEDIA_TYPE_IMAGE);
@@ -108,8 +119,49 @@ public class MainActivity extends AppCompatActivity {
             } catch (IOException e) {
                 Log.d(TAG, "Error accessing file: " + e.getMessage());
             }
+
+            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+            Bitmap bitmap = BitmapFactory.decodeFile(pictureFile.getAbsolutePath(),bmOptions);
+
+            Matrix matrix = new Matrix();
+            matrix.postRotate(90); //  portrait picture
+            int bw = bitmap.getWidth();
+            int bh = bitmap.getHeight();
+            Log.d("MOTONG", "width: "+bw+", height: "+bh);
+
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bw, bh, matrix, true);
+            bitmap = cropToSquare(bitmap);
+
+            img2.setImageBitmap(bitmap);
+
+            FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bitmap);
+            recognizeText(image);
+//
+//            try (FileOutputStream out = new FileOutputStream(pictureFile)) {
+//                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out); // bmp is your Bitmap instance
+//                // PNG is a lossless format, the compression factor (100) is ignored
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
         }
     };
+
+    public static Bitmap cropToSquare(Bitmap bitmap){
+        int width  = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        int newWidth = (height > width) ? width : height;
+        int newHeight = (height > width)? height - ( height - width) : height;
+        //newHeight = (int) (newHeight * 0.10); // 10%
+        int cropW = (width - height) / 2;
+        cropW = (cropW < 0)? 0: cropW;
+        int cropH = (height - width) / 2;
+        cropH = (cropH < 0)? 0: cropH;
+        //cropH = 60;
+        //Log.d("MOTONG", "width: "+width+", height: "+height+" cropW:" + cropW + ", cropH: "+cropH+", newWidth: "+newWidth+", newHeight:" + newWidth);
+        Bitmap cropImg = Bitmap.createBitmap(bitmap, cropW, 40, newWidth, newHeight/2);
+
+        return cropImg;
+    }
 
     private static Uri getOutputMediaFileUri(int type) {
         return Uri.fromFile(getOutputMediaFile(type));
@@ -134,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         File mediaFile;
         if (type == MEDIA_TYPE_IMAGE) {
-
+            // uncoment to save image on memory
             mediaFile = new File(mediaStorageDir.getPath() + File.separator + "IMG" + timeStamp + ".jpg");
         } else {
             return null;
@@ -160,12 +212,13 @@ public class MainActivity extends AppCompatActivity {
                                 // [START_EXCLUDE]
                                 // [START get_text]
                                 String hasil = "";
+                                Log.d("HASILE", "proses");
 
                                 for (FirebaseVisionText.TextBlock block : firebaseVisionText.getTextBlocks()) {
                                     Rect boundingBox = block.getBoundingBox();
                                     Point[] cornerPoints = block.getCornerPoints();
                                     String text = block.getText();
-
+                                    Log.d("HASILE", text);
                                     for (FirebaseVisionText.Line line: block.getLines()) {
                                         Log.d("HASILE", line.getText());
                                         hasil = line.getText();
@@ -201,6 +254,9 @@ public class MainActivity extends AppCompatActivity {
 
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath(),bmOptions);
+
+        img2.setImageBitmap(bitmap);
+
         FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bitmap);
         recognizeText(image);
     }
